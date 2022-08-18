@@ -18,3 +18,5 @@ Sourcing `. bin/falcon_activate` into your shell will create two new aliases tha
 ```
 
 Example the example files for how exported variables with the correct names are created in the example files.
+
+![Screenshot](docs/Fetching%20Tags.png?raw=true "Screenshot") <!-- .element height="50%" width="50%" -->
