@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+KUBECTL="microk8s.kubectl"
+nodeName=$1
+myImage=$($KUBECTL get pod -n falcon-system -l app.kubernetes.io/name=falcon-sensor -o jsonpath="{.items[*].spec.containers[*].image}"|head -1)
+
+$KUBECTL apply -f -  <<____HERE
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: falconctl
+  labels:
+    app: falconctl
+spec:
+  nodeName: $nodeName
+  initContainers:
+  - name: falconctl
+    image: $myImage
+    # This below attribute can be updated with any of the falconctl commands.
+    command: ["falconctl", "-g", "--aid"]
+    securityContext:
+      runAsUser: 0
+      privileged: true
+      readOnlyRootFilesystem: false
+      allowPrivilegeEscalation: true
+  containers:
+  - name: pause
+    image: gcr.io/google_containers/pause
+    imagePullPolicy: IfNotPresent
+  hostNetwork: true
+  hostPID: true
+  hostIPC: true
+
+____HERE
