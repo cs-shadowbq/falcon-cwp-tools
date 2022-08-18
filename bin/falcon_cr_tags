@@ -7,9 +7,6 @@ for app in "${_REQUIRED_APPS[@]}"; do
   command -v $app >/dev/null 2>&1 || { echo >&2 "Required app:'${app}' is not installed or in \$PATH.  Aborting."; exit 1; }
 done
 
-#FALCON_CR_PATH="${FALCON_SENSOR_TYPE}/${FALCON_CLOUD_COMMON_NAME}/release/falcon-sensor"
-#FALCON_CR_URL="${FALCON_CR}/${FALCON_CR_PATH}"
-
 
 #Corrections for downcase sensitivity
 
