@@ -1,0 +1,21 @@
+# Common Falcon ENV
+export FALCON_CLOUD_COMMON_NAME="govcloud"
+export FALCON_CLOUD_PROPER_NAME="US-GOV-1"
+export FALCON_CR="registry.laggar.gcw.crowdstrike.com"
+export FALCON_API_URL="api.laggar.gcw.crowdstrike.com"
+
+# K8s Settings
+export FALCON_DS_NAMESPACE="falcon-system"
+export FALCON_IMAGE_SECRET="cs-registry-secret"
+
+# Falcon Sensor
+export FALCON_SENSOR_VERSION="6.44.0-2701"
+# Helm chart uses falcon.image.tag "latest" by default
+export FALCON_IMAGE_TAG="${FALCON_SENSOR_VERSION}.falcon-linux.x86_64.Release.${FALCON_CLOUD_PROPER_NAME}"
+
+
+# USE CrowdStrike falcon-sensor or container-sensor
+export FALCON_SENSOR_TYPE="falcon-sensor"
+export FALCON_CR_PATH="${FALCON_SENSOR_TYPE}/${FALCON_CLOUD_COMMON_NAME}/release/falcon-sensor"
+export FALCON_CR_URL="${FALCON_CR}/${FALCON_CR_PATH}"
+
