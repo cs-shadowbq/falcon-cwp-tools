@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+FALCON_IMAGE_TAG=6.43.0-14005.falcon-linux.x86_64.Release.US-GOV-1
+
+HELM="microk8s.helm3"
+KUBECTL="microk8s.kubectl"
+
+_REQUIRED_APPS=('jq' 'tr' 'curl' $HELM $KUBECTL )
+for app in "${_REQUIRED_APPS[@]}"; do
+  command -v $app >/dev/null 2>&1 || { echo >&2 "Required app:'${app}' is not installed or in \$PATH.  Aborting."; exit 1; }
+done
+
+#Corrections for downcase sensitivity
+
+FALCON_CID=$(echo $FALCON_CID| tr '[:upper:]' '[:lower:]')
+FALCON_CID_CHKSUM=$(echo $FALCON_CID_CHKSUM| tr '[:upper:]' '[:lower:]')
+_FALCON_CR_USERNAME="fc-${FALCON_CID}"
+
+
+_RESPONSE=$(curl --data "client_id=${FALCON_API_CLIENT_ID}&client_secret=${FALCON_API_CLIENT_SECRET}" --request POST --silent https://${FALCON_API_URL}/oauth2/token)
+
+_BEARER_TOKEN=$(echo ${_RESPONSE} | jq ."access_token" |tr -d \" )
+
+_RESOURCE_TOKEN=$(curl --silent -X GET -H "authorization: Bearer ${_BEARER_TOKEN}" https://${FALCON_API_URL}/container-security/entities/image-registry-credentials/v1)
+_FALCON_CR_PASSWORD=$(echo ${_RESOURCE_TOKEN} | jq '."resources"[]."token"'|tr -d \" )
+
+FALCON_CR_PATH="${FALCON_SENSOR_TYPE}/${FALCON_CLOUD_COMMON_NAME}/release/falcon-sensor"
+FALCON_CR_URL="${FALCON_CR}/${FALCON_CR_PATH}"
+
+_namespaceStatus=$($KUBECTL get ns ${FALCON_DS_NAMESPACE} -o json | jq .status.phase -r)
+if [ $_namespaceStatus == "Active" ]
+then
+    echo "${FALCON_DS_NAMESPACE} namespace is already present"
+else
+   $KUBECTL create namespace ${FALCON_DS_NAMESPACE}
+fi
+
+_secretStatus=$($KUBECTL get secret -n ${FALCON_DS_NAMESPACE} ${FALCON_IMAGE_SECRET} -o json | jq .type -r)
+if [ $_secretStatus == "kubernetes.io/dockerconfigjson" ]
+then
+    $KUBECTL delete secret -n ${FALCON_DS_NAMESPACE} ${FALCON_IMAGE_SECRET}
+fi
+
+#set the dockerconfigjson in the secret
+$KUBECTL create secret docker-registry ${FALCON_IMAGE_SECRET} --docker-server=${FALCON_CR} --docker-username="${_FALCON_CR_USERNAME}" --docker-password=${_FALCON_CR_PASSWORD} --namespace ${FALCON_DS_NAMESPACE}
+
+$HELM repo add crowdstrike https://crowdstrike.github.io/falcon-helm
+$HELM repo update
+
+$HELM upgrade --install falcon-helm crowdstrike/falcon-sensor -n ${FALCON_DS_NAMESPACE} --set falcon.cid=${FALCON_CID_CHKSUM} --set node.image.repository="${FALCON_CR_URL}" --set node.image.pullSecrets="${FALCON_IMAGE_SECRET}" --set node.image.tag=${FALCON_IMAGE_TAG}
+
