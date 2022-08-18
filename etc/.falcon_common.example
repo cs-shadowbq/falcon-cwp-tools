@@ -16,6 +16,4 @@ export FALCON_IMAGE_TAG="${FALCON_SENSOR_VERSION}.falcon-linux.x86_64.Release.${
 
 # USE CrowdStrike falcon-sensor or container-sensor
 export FALCON_SENSOR_TYPE="falcon-sensor"
-export FALCON_CR_PATH="${FALCON_SENSOR_TYPE}/${FALCON_CLOUD_COMMON_NAME}/release/falcon-sensor"
-export FALCON_CR_URL="${FALCON_CR}/${FALCON_CR_PATH}"
 
