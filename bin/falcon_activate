@@ -1,0 +1,17 @@
+ # Helper function
+ is_sourced() {
+   if [ -n "$ZSH_VERSION" ]; then 
+       case $ZSH_EVAL_CONTEXT in *:file:*) return 0;; esac
+   else  # Add additional POSIX-compatible shell names here, if needed.
+       case ${0##*/} in dash|-dash|bash|-bash|ksh|-ksh|sh|-sh) return 0;; esac
+   fi
+   return 1  # NOT sourced.
+ }
+
+if is_sourced; then 
+  alias falcon_load_env='eval "$(cat ~/.falcon_secrets ~/.falcon_common)"'
+  alias falcon_unload_env='unset "${!FALCON_@}"'
+else
+  echo "$BASH_SOURCE script needs to be sourced, not executed."
+  exit 1
+fi
