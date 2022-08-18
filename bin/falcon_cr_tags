@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+_REQUIRED_APPS=('jq' 'tr' 'curl')
+for app in "${_REQUIRED_APPS[@]}"; do
+  command -v $app >/dev/null 2>&1 || { echo >&2 "Required app:'${app}' is not installed or in \$PATH.  Aborting."; exit 1; }
+done
+
+#FALCON_CR_PATH="${FALCON_SENSOR_TYPE}/${FALCON_CLOUD_COMMON_NAME}/release/falcon-sensor"
+#FALCON_CR_URL="${FALCON_CR}/${FALCON_CR_PATH}"
+
+
+#Corrections for downcase sensitivity
+
+FALCON_CID=$(echo $FALCON_CID| tr '[:upper:]' '[:lower:]')
+FALCON_CID_CHKSUM=$(echo $FALCON_CID_CHKSUM| tr '[:upper:]' '[:lower:]')
+_FALCON_CR_USERNAME="fc-${FALCON_CID}"
+
+# Fetch Container Registry Password from API
+
+_RESPONSE=$(curl --data "client_id=${FALCON_API_CLIENT_ID}&client_secret=${FALCON_API_CLIENT_SECRET}" --request POST --silent https://${FALCON_API_URL}/oauth2/token)
+
+_BEARER_TOKEN=$(echo ${_RESPONSE} | jq ."access_token" |tr -d \" )
+
+_RESOURCE_TOKEN=$(curl --silent -X GET -H "authorization: Bearer ${_BEARER_TOKEN}" https://${FALCON_API_URL}/container-security/entities/image-registry-credentials/v1)
+_FALCON_CR_PASSWORD=$(echo ${_RESOURCE_TOKEN} | jq '."resources"[]."token"'|tr -d \" )
+
+# Fatch Bearer from Container Registry
+
+_REGISTRY_BEARER_TOKEN_RESPONSE=$(curl -X GET -s -u "${_FALCON_CR_USERNAME}:${_FALCON_CR_PASSWORD}" "https://${FALCON_CR}/v2/token?=${_FALCON_CR_USERNAME}&scope=repository:${FALCON_CR_PATH}:pull&service=${FALCON_CR}")
+
+_REGISTRY_BEARER_TOKEN=$(echo ${_REGISTRY_BEARER_TOKEN_RESPONSE} | jq ."token" |tr -d \" )
+
+# Fetch JSON tags list from FALCON_CR
+
+FALCON_CR_PATH="${FALCON_SENSOR_TYPE}/${FALCON_CLOUD_COMMON_NAME}/release/falcon-sensor"
+FALCON_CR_URL="${FALCON_CR}/${FALCON_CR_PATH}"
+echo Falcon Container URL: $FALCON_CR_URL
+
+curl -X GET -s -H "authorization: Bearer ${_REGISTRY_BEARER_TOKEN}" "https://${FALCON_CR}/v2/${FALCON_CR_PATH}/tags/list" | jq .
