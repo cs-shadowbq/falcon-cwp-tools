@@ -30,7 +30,7 @@ _FALCON_CR_PASSWORD=$(echo ${_RESOURCE_TOKEN} | jq '."resources"[]."token"'|tr -
 FALCON_CR_PATH="${FALCON_SENSOR_TYPE}/${FALCON_CLOUD_COMMON_NAME}/release/falcon-sensor"
 FALCON_CR_URL="${FALCON_CR}/${FALCON_CR_PATH}"
 
-_namespaceStatus=$($KUBECTL get ns ${FALCON_DS_NAMESPACE} -o json | jq .status.phase -r)
+_namespaceStatus=$($KUBECTL get ns ${FALCON_DS_NAMESPACE} -o json --ignore-not-found| jq .status.phase -r)
 if [ $_namespaceStatus == "Active" ]
 then
     echo "${FALCON_DS_NAMESPACE} namespace is already present"
@@ -38,7 +38,7 @@ else
    $KUBECTL create namespace ${FALCON_DS_NAMESPACE}
 fi
 
-_secretStatus=$($KUBECTL get secret -n ${FALCON_DS_NAMESPACE} ${FALCON_IMAGE_SECRET} -o json | jq .type -r)
+_secretStatus=$($KUBECTL get secret -n ${FALCON_DS_NAMESPACE} ${FALCON_IMAGE_SECRET} -o json --ignore-not-found| jq .type -r)
 if [ $_secretStatus == "kubernetes.io/dockerconfigjson" ]
 then
     $KUBECTL delete secret -n ${FALCON_DS_NAMESPACE} ${FALCON_IMAGE_SECRET}
