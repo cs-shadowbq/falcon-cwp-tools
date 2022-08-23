@@ -11,6 +11,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: falconctl
+  namespace: $FALCON_DS_NAMESPACE
   labels:
     app: falconctl
 spec:
