@@ -8,21 +8,20 @@ These tools are designed to help work with CrowdStrikes CWP products and CR regi
 
 Recommendation is to use a secure vault for the secrets, or some other approved encrypted manner where secrets are not stored at rest unencrypted.
 
-* [Secrets](https://github.com/shadowbq/matrix.secrets) - Matrix GPG/RSA secrets method of storing the bash credentials.
+* [secrets](https://github.com/shadowbq/matrix.secrets) - Matrix GPG/RSA secrets method of storing the bash credentials.
 * [vault](https://www.vaultproject.io/) - Secure, store and tightly control access to tokens, passwords, certificates, encryption keys for protecting secrets and other sensitive data using a UI, CLI, or HTTP API.
 
 
 ## `falcon_activate`
 
-Sourcing `. bin/falcon_activate` into your shell will create two new aliases that allow for loading and unloading of the environmental bash variables stored in the following files.
+Sourcing `. bin/falcon_activate` into your shell will create two new aliases 
 
-```
-~/.falcon_common
-```
+* `falcon_load_env` - load `$HOME/.falcon_common` into your ENV
+* `falcon_unload_env` - unload all `FALCON_*` env variables from your shell
 
 ### Falcon Shell Environmental VARs
 
-Additionally source Data source via (matrix|vault)
+Sensitive Data sourced via (secrets|vault)
 
 ```
 env | grep -i FALCON_
