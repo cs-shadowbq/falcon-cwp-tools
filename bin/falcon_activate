@@ -9,7 +9,7 @@
  }
 
 if is_sourced; then 
-  alias falcon_load_env='eval "$(cat ~/.falcon_secrets ~/.falcon_common)"'
+  alias falcon_load_env='eval "$(cat ~/.falcon_common)"'
   alias falcon_unload_env='unset "${!FALCON_@}"'
 else
   echo "$BASH_SOURCE script needs to be sourced, not executed."
