@@ -16,11 +16,11 @@ _FALCON_CR_USERNAME="fc-${FALCON_CID}"
 
 # Fetch Container Registry Password from API
 
-_RESPONSE=$(curl --data "client_id=${FALCON_API_CLIENT_ID}&client_secret=${FALCON_API_CLIENT_SECRET}" --request POST --silent https://${FALCON_API_URL}/oauth2/token)
+_RESPONSE=$(curl --data "client_id=${FALCON_CLIENT_ID}&client_secret=${FALCON_CLIENT_SECRET}" --request POST --silent https://${FALCON_BASE_URL}/oauth2/token)
 
 _BEARER_TOKEN=$(echo ${_RESPONSE} | jq ."access_token" |tr -d \" )
 
-_RESOURCE_TOKEN=$(curl --silent -X GET -H "authorization: Bearer ${_BEARER_TOKEN}" https://${FALCON_API_URL}/container-security/entities/image-registry-credentials/v1)
+_RESOURCE_TOKEN=$(curl --silent -X GET -H "authorization: Bearer ${_BEARER_TOKEN}" https://${FALCON_BASE_URL}/container-security/entities/image-registry-credentials/v1)
 _FALCON_CR_PASSWORD=$(echo ${_RESOURCE_TOKEN} | jq '."resources"[]."token"'|tr -d \" )
 
 # Fatch Bearer from Container Registry
