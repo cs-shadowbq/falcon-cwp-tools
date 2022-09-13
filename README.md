@@ -2,9 +2,9 @@
 
 These tools are designed to help work with CrowdStrikes CWP products and CR registries.
 
-## Warning (Proof of Concept)
+## Secure usage of ENV variables 
 
-This is *not a secure method* of storing secets in an unencrypted bash shell. This is meant as a demostration purpose only on how one might load environmental variables into the shell for processing. 
+`$HOME/.falcon_common` should ***not*** include your sensitive falcon variables such as `FALCON_API_CLIENT_SECRET`
 
 Recommendation is to use a secure vault for the secrets, or some other approved encrypted manner where secrets are not stored at rest unencrypted.
 
@@ -18,12 +18,21 @@ Sourcing `. bin/falcon_activate` into your shell will create two new aliases tha
 
 ```
 ~/.falcon_common
-~/.falcon_secrets 
 ```
 
-### Falcon Secrets
+### Falcon Shell Environmental VARs
 
-`~/.falcon_common`
+Additionally source Data source via (matrix|vault)
+
+```
+env | grep -i FALCON_
+FALCON_CID="aaaaaaaaaaaaaaaaa"
+FALCON_CID_CHKSUM="${FALCON_CID}-aa"
+FALCON_API_CLIENT_ID=bbbbbbbbbbbbbb
+FALCON_API_CLIENT_SECRET=cccccccccccccccccc
+```
+
+`~/.falcon_common` - Safe variables that can be store in a cleartxt environment
 
 ```
 # Common Falcon ENV
@@ -46,15 +55,7 @@ export FALCON_IMAGE_TAG="${FALCON_SENSOR_VERSION}.falcon-linux.x86_64.Release.${
 export FALCON_SENSOR_TYPE="falcon-sensor"
 ```
 
-`~/.falcon_secrets` 
 
-```
-# Falcon SECRET Information
-export FALCON_CID="aaaaaaaaaaaaaaaaa"
-export FALCON_CID_CHKSUM="${FALCON_CID}-aa"
-export FALCON_API_CLIENT_ID=bbbbbbbbbbbbbb
-export FALCON_API_CLIENT_SECRET=cccccccccccccccccc
-```
 
 
 
