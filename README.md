@@ -6,7 +6,7 @@ These tools are designed to help work with CrowdStrikes CWP products and CR regi
 
 This is *not a secure method* of storing secets in an unencrypted bash shell. This is meant as a demostration purpose only on how one might load environmental variables into the shell for processing. 
 
-Recommendation is to a a secure vault for the secrets, or some other approved encrypted manner where secrets are not stored at rest unencrypted.
+Recommendation is to use a secure vault for the secrets, or some other approved encrypted manner where secrets are not stored at rest unencrypted.
 
 * [Secrets](https://github.com/shadowbq/matrix.secrets) - Matrix GPG/RSA secrets method of storing the bash credentials.
 * [vault](https://www.vaultproject.io/) - Secure, store and tightly control access to tokens, passwords, certificates, encryption keys for protecting secrets and other sensitive data using a UI, CLI, or HTTP API.
