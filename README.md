@@ -27,8 +27,8 @@ Sensitive Data sourced via (secrets|vault)
 env | grep -i FALCON_
 FALCON_CID="aaaaaaaaaaaaaaaaa"
 FALCON_CID_CHKSUM="${FALCON_CID}-aa"
-FALCON_API_CLIENT_ID=bbbbbbbbbbbbbb
-FALCON_API_CLIENT_SECRET=cccccccccccccccccc
+FALCON_CLIENT_ID=bbbbbbbbbbbbbb
+FALCON_CLIENT_SECRET=cccccccccccccccccc
 ```
 
 `~/.falcon_common` - Safe variables that can be store in a cleartxt environment
@@ -38,7 +38,7 @@ FALCON_API_CLIENT_SECRET=cccccccccccccccccc
 export FALCON_CLOUD_COMMON_NAME="govcloud"
 export FALCON_CLOUD_PROPER_NAME="US-GOV-1"
 export FALCON_CR="registry.laggar.gcw.crowdstrike.com"
-export FALCON_API_URL="api.laggar.gcw.crowdstrike.com"
+export FALCON_BASE_URL="api.laggar.gcw.crowdstrike.com"
 
 # K8s Settings
 export FALCON_DS_NAMESPACE="falcon-system"
