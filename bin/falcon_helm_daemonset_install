@@ -3,8 +3,8 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+echo "*WARNING HARDCODED IMAGE, MICROK8s shortcuts*"
 FALCON_IMAGE_TAG=6.43.0-14005.falcon-linux.x86_64.Release.US-GOV-1
-
 HELM="microk8s.helm3"
 KUBECTL="microk8s.kubectl"
 
@@ -20,11 +20,11 @@ FALCON_CID_CHKSUM=$(echo $FALCON_CID_CHKSUM| tr '[:upper:]' '[:lower:]')
 _FALCON_CR_USERNAME="fc-${FALCON_CID}"
 
 
-_RESPONSE=$(curl --data "client_id=${FALCON_API_CLIENT_ID}&client_secret=${FALCON_API_CLIENT_SECRET}" --request POST --silent https://${FALCON_API_URL}/oauth2/token)
+_RESPONSE=$(curl --data "client_id=${FALCON_CLIENT_ID}&client_secret=${FALCON_CLIENT_SECRET}" --request POST --silent https://${FALCON_BASE_URL}/oauth2/token)
 
 _BEARER_TOKEN=$(echo ${_RESPONSE} | jq ."access_token" |tr -d \" )
 
-_RESOURCE_TOKEN=$(curl --silent -X GET -H "authorization: Bearer ${_BEARER_TOKEN}" https://${FALCON_API_URL}/container-security/entities/image-registry-credentials/v1)
+_RESOURCE_TOKEN=$(curl --silent -X GET -H "authorization: Bearer ${_BEARER_TOKEN}" https://${FALCON_BASE_URL}/container-security/entities/image-registry-credentials/v1)
 _FALCON_CR_PASSWORD=$(echo ${_RESOURCE_TOKEN} | jq '."resources"[]."token"'|tr -d \" )
 
 FALCON_CR_PATH="${FALCON_SENSOR_TYPE}/${FALCON_CLOUD_COMMON_NAME}/release/falcon-sensor"
