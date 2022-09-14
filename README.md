@@ -15,6 +15,9 @@ These tools are designed to help work with CrowdStrikes CWP products, the multip
      
   + Kubernetes Protection Agent - A Kubernetes API level agent information gathering container deployed once into a cluster for workload visibility.
      The kubernetes protection agent is a private helm.tar.gz file in the private helmchart of the Crowdstrike private API. You can mirror it to your own helm chart repo. 
+     
+     Setup - https://falcon.crowdstrike.com/cloud-security/registration
+     
      This is a Dockerv1 API so you can provide a dockerAPIToken for authentication
      
      - https://registry.crowdstrike.com/kpagent-helm
@@ -97,9 +100,9 @@ export FALCON_SENSOR_TYPE="falcon-sensor"
 ```
 
 
+Example retrieving the list of available sensor in the container repositories.
 
-
-
-Example the example files for how exported variables with the correct names are created in the example files.
+    - https://registry.crowdstrike.com/falcon-sensor
+    - https://registry.crowdstrike.com/falcon-container
 
 ![Screenshot](docs/Fetching%20Tags.png?raw=true "Screenshot") <!-- .element height="50%" width="50%" -->
