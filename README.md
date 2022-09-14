@@ -1,6 +1,48 @@
-# CWP-Tools
+# CrowdStrike Falcon Cloud Workload Protection DevSecOp Tools
 
-These tools are designed to help work with CrowdStrikes CWP products and CR registries.
+These tools are designed to help work with CrowdStrikes CWP products, the multiple helm charts and Container Registries.
+
+## Reference Repositories
+
+* CrowdStrike Helm Charts 
+  + Falcon Sensor  - A Falcon Sensor deployment via a container for DEVSECOPS into Kubernetes.
+     https://github.com/CrowdStrike/falcon-helm/tree/main/helm-charts/falcon-sensor  
+     https://crowdstrike.github.io/falcon-helm  
+     The falcon sensor public helm chart is a public helm chart that references the helm.tar.gz file in the deployment section of the public gitrepo. You can mirror it to your own helm chart repo.
+       
+    - Kernel Mode Sensor Deployment (aka Linux Sensor) - DaemonSet deployment (default) `--set container.enabled=false` that is deployed to all Kubernetes Worker nodes with special operator priviledges.
+    - Container Sensor (aka UserMode Sensor) - SideCar deployment `--set container.enabled=true` that is deployed to monitor specific NAMESPACEs with stub sidecars on every pod and a Sensor pod for each Namespace.
+     
+  + Kubernetes Protection Agent - A Kubernetes API level agent information gathering container deployed once into a cluster for workload visibility.
+     The kubernetes protection agent is a private helm.tar.gz file in the private helmchart of the Crowdstrike private API. You can mirror it to your own helm chart repo. 
+     This is a Dockerv1 API so you can provide a dockerAPIToken for authentication
+     
+     - https://registry.crowdstrike.com/kpagent-helm
+     - https://registry.crowdstrike.com/kubernetes_protection/kpagent 
+     
+* CrowdStrike Operators
+  + Falcon Sensor -  **An alternative to the Falcon Sensor helm charts**,  - Sensor deployment via a container for DEVSECOPS. This operator which deploys a controller into Kubernetes assists in getting the bearer tokens from the two APIs that must be done manually if used with the helm chart.
+  
+       https://github.com/CrowdStrike/falcon-operator
+       https://github.com/CrowdStrike/falcon-operator/blob/main/deploy/falcon-operator.yaml
+
+    - Kernel Mode Sensor Deployment (aka Linux Sensor) - DaemonSet deployment `kind: FalconNodeSensor`
+    - Container Sensor (aka UserMode Sensor) - SideCar deployment `kind: FalconContainer`
+    
+* Falcon Sensor Download
+  + The user installable - located in the Falcon Platform UI(https://falcon.crowdstrike.com) and [REST API](https://api.crowdstrike.com) of CrowdStrike Falcon. You can fetch this with the psfalconSDK or the falconpy SDK. This is NOT deployable via containers or kubernetes.
+  
+  + The DEVSECOP container deployment - is NOT located in the UI . You must retrieve it from the container registry associated with cloud that the customer CID environment is associated. In order to talk to the registry, you must get a bearer token from the REST API and then also from the REGISTRY itself. 
+    - https://registry.crowdstrike.com/falcon-sensor
+    - https://registry.crowdstrike.com/falcon-container
+
+### Notes on alternative clouds
+
+CrowdStrike Gov Clouds `us-gov-1` require specific urls liek the addition of `laggar.gcw.`, other clouds such as us-2 are often auto discoverable but *may require* specific domain changes. 
+
+* Private Helm - https://registry.laggar.gcw.crowdstrike.com/kpagent-helm 
+* Private CR - https://registry.laggar.gcw.crowdstrike.com/falcon-container
+* REST API -  https://api.laggar.gcw.crowdstrike.com 
 
 ## Secure usage of ENV variables 
 
