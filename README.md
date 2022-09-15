@@ -4,6 +4,8 @@ These tools are designed to help work with CrowdStrikes CWP products, the multip
 
 For my general crowdstrike python tools: https://github.com/cs-shadowbq/falconpy-tools
 
+CR Scanning CLI tool - https://github.com/CrowdStrike/container-image-scan/blob/main/README.md
+
 ## Reference Repositories
 
 * CrowdStrike Helm Charts 
