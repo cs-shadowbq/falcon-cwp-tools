@@ -2,6 +2,8 @@
 
 These tools are designed to help work with CrowdStrikes CWP products, the multiple helm charts and Container Registries.
 
+For my general crowdstrike python tools: https://github.com/cs-shadowbq/falconpy-tools
+
 ## Reference Repositories
 
 * CrowdStrike Helm Charts 
